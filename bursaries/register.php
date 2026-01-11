@@ -28,6 +28,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $mysqli->real_escape_string(trim($_POST['email']));
     $phone = $mysqli->real_escape_string(trim($_POST['phone']));
     $password = $mysqli->real_escape_string(trim($_POST['password']));
+    
+    // Optionally accept user_id if referral or linked user is supplied, else NULL
+    // For example, if you have a hidden field or referral ID sent from a form
+    $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : NULL;
 
     // Validate the inputs
     if (empty($id_number) || empty($first_name) || empty($last_name) || empty($ward) || empty($email) || empty($phone) || empty($password)) {
@@ -39,47 +43,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (strlen($password) < 8) {
         $_SESSION['registration_message'] = "Password should be at least 8 characters.";
     } else {
-        // Check for duplicates using a single query with UNION to combine the checks
+        // Check for duplicates using a single query
         $check_duplicates_sql = "SELECT * FROM applicants WHERE id_number = ? OR email = ? OR phone = ?";
         $check_duplicates_stmt = $mysqli->prepare($check_duplicates_sql);
         $check_duplicates_stmt->bind_param("sss", $id_number, $email, $phone);
         $check_duplicates_stmt->execute();
         $duplicates_result = $check_duplicates_stmt->get_result();
 
-        // Check if there are any duplicates
         if ($duplicates_result->num_rows > 0) {
-            $_SESSION['registration_message'] = "Details  already exists.Try again please";
+            $_SESSION['registration_message'] = "Details already exist. Try again please.";
         } else {
-            // If no duplicates, insert the new user
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Hash the password before storing
+            // Hash the password before storing
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-            $sql = "INSERT INTO applicants (id_number, first_name, last_name, ward, email, phone, password) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $mysqli->prepare($sql);
-            $stmt->bind_param("sssssss", $id_number, $first_name, $last_name, $ward, $email, $phone, $hashed_password);
+            if ($user_id === NULL) {
+                // Insert with NULL user_id
+                $sql = "INSERT INTO applicants (id_number, first_name, last_name, ward, email, phone, password, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, NULL)";
+                $stmt = $mysqli->prepare($sql);
+                $stmt->bind_param("sssssss", $id_number, $first_name, $last_name, $ward, $email, $phone, $hashed_password);
+            } else {
+                // Insert with provided user_id (referral or parent)
+                $sql = "INSERT INTO applicants (id_number, first_name, last_name, ward, email, phone, password, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                $stmt = $mysqli->prepare($sql);
+                $stmt->bind_param("sssssssi", $id_number, $first_name, $last_name, $ward, $email, $phone, $hashed_password, $user_id);
+            }
 
-            // Execute the statement
             if ($stmt->execute()) {
-                // Store a success message in session
                 $_SESSION['registration_message'] = "User registered successfully.";
             } else {
-                // Store a failure message in session
                 $_SESSION['registration_message'] = "Error: Please try again later.";
             }
 
-            // Close the statement
             $stmt->close();
         }
 
-        // Close the prepared statement for duplicate check
         $check_duplicates_stmt->close();
     }
 
-    // Redirect to registration_page.php to display messages
     header("Location: registration_page.php");
     exit();
 }
 
-// Close the database connection
 $mysqli->close();
 ?>

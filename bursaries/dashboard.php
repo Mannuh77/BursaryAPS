@@ -77,9 +77,9 @@ $status = "Application Status: Pending";
     <div class="sidebar" id="sidebar">
         <h2>Applicants Profile</h2>
         <h2><a href="#" onclick="loadContent('applicantDetails.php')">Applicant Details</a></h2>
-        <h2><a href="#" onclick="loadContent('institutionDetails.php')">Institution Details</a></h2>
-        <h2><a href="#" onclick="loadContent('attachments.php')">Attachments</a></h2>
-        <h2><a href="#" onclick="loadContent('apply.php')">Apply for Bursary</a></h2>
+       <!-- <h2><a href="#" onclick="loadContent('institutionDetails.php')">Institution Details</a>
+        <h2><a href="#" onclick="loadContent('attachments.php')">Attachments</a>
+        <h2><a href="#" onclick="loadContent('apply.php')">Apply for Bursary</a></h2>---->
         <h2><a href="#" onclick="loadContent('status.php')">Application Status</a></h2>        
         
     </div>
@@ -91,13 +91,12 @@ $status = "Application Status: Pending";
         <p>
             <h2><b>Important Notice:</b></h2><br>
             The information provided in this bursary application system is for the purpose of applying for financial assistance only and may change without notice.
-            <br>
-            By submitting your application, you acknowledge that:<br>
+            <br><br><b>By submitting your application, you acknowledge that:</b><br>
             <b>Eligibility:</b> Ensure you meet the eligibility criteria before applying.<br>
             <b>Data Protection:</b> Your personal information will be processed in accordance with data protection laws and will only be used for application purposes.
             <br><b>No Guarantees:</b> Submitting an application does not guarantee funding. All applications are subject to review and approval.
-            Changes: We may amend the terms of the bursary at any time. Check the website regularly for updates.
-            Limitation of Liability: We are not liable for any damages arising from the use of this system.
+            <br><b>Changes:</b> We may amend the terms of the bursary at any time.<br> Check the website regularly for updates.
+           <br><b>Limitation of Liability:</b> We are not liable for any damages arising from the use of this system.
         </p>
     </div>
 </div>
@@ -118,31 +117,32 @@ $status = "Application Status: Pending";
 
     // Load content dynamically and hide the sidebar
     function loadContent(page) {
-        const displayArea = document.getElementById('displayArea');
-        const sidebar = document.getElementById('sidebar');
+    const displayArea = document.getElementById('displayArea');
+    const sidebar = document.getElementById('sidebar');
 
-        // Hide the sidebar when loading new content
-        sidebar.classList.add('hidden');
+    sidebar.classList.add('hidden');
+    displayArea.innerHTML = "<p>Loading...</p>";
 
-        // Show loading state
-        displayArea.innerHTML = "<p>Loading...</p>";
-
-        fetch(page)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(data => {
-                // Insert fetched data
-                displayArea.innerHTML = data;
-            })
-            .catch(error => {
-                displayArea.innerHTML = "<p>Error loading content. Please try again later.</p>";
-                console.error('There has been a problem with your fetch operation:', error);
+    fetch(page)
+        .then(response => response.text())
+        .then(html => {
+            // Insert the HTML
+            displayArea.innerHTML = html;
+            
+            // Find and execute all scripts in the loaded content
+            const scripts = displayArea.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                newScript.textContent = script.textContent;
+                document.body.appendChild(newScript);
+                document.body.removeChild(newScript);
             });
-    }
+        })
+        .catch(error => {
+            displayArea.innerHTML = "<p>Error loading content. Please try again later.</p>";
+            console.error('Error:', error);
+        });
+}
 </script>
 </body>
 </html>

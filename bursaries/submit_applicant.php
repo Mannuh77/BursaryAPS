@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         );
 
         if ($stmt->execute()) {
-            $message = "Details saved successfully.";
+            $message = "Details saved successfully. Continue to Institution Details";
         } else {
             $message = "Failed to save details. Please try again.";
         }
