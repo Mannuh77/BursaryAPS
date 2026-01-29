@@ -1,66 +1,66 @@
 <?php
-// Start session at the top before any output
-session_start();
+session_start(); // MUST be first line
 
 // Database configuration
+$db_host = 'localhost';
 $db_username = 'root';
 $db_password = '';
 $db_name = 'kibweziwest';
-$db_host = 'localhost';
 
-// Create a new MySQLi connection
+// Connect to MySQL
 $mysqli = new mysqli($db_host, $db_username, $db_password, $db_name);
-
-// Check for connection errors
 if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
+    die("Database connection failed: " . $mysqli->connect_error);
 }
 
-// Initialize message variable
 $message = '';
 
-// Generate CSRF token if it doesn't exist
-if (empty($_SESSION['csrf_token'])) {
+// Generate CSRF token if not set
+if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 // Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check CSRF token
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $message = "Invalid request. Please try again.";
     } else {
-        // Sanitize input
-        $email = $mysqli->real_escape_string(trim($_POST['email']));
-        $password = $mysqli->real_escape_string(trim($_POST['password']));
+        $email = trim(strtolower($_POST['email']));
+        $password = trim($_POST['password']);
 
-        // Prepare SQL
-        $sql = "SELECT * FROM applicants WHERE email = ?";
-        if ($stmt = $mysqli->prepare($sql)) {
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $result = $stmt->get_result();
+        // Fetch user by email
+        $stmt = $mysqli->prepare("SELECT id, email, password, first_name, last_name FROM applicants WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-            if ($result->num_rows > 0) {
-                $user = $result->fetch_assoc();
+        if ($result->num_rows === 1) {
+            $user = $result->fetch_assoc();
 
-                if (password_verify($password, $user['password'])) {
-                    $_SESSION['user_id'] = $user['id']; // Assumes 'id' field exists
-                    header("Location: dashboard.php");
-                    exit();
-                }
+            // Verify password
+            if (password_verify($password, $user['password'])) {
+                // Login success
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['first_name'] = $user['first_name'];
+                $_SESSION['last_name'] = $user['last_name'];
+
+                session_regenerate_id(true); // Security
+
+                header("Location: dashboard.php");
+                exit();
+            } else {
+                $message = "Invalid email or password.";
             }
-
-            // Generic error message for security
-            $message = "Invalid email or password.";
-            $stmt->close();
         } else {
-            $message = "Server error. Please try again later.";
+            $message = "Invalid email or password.";
         }
+
+        $stmt->close();
     }
 }
 
-// Close database connection
 $mysqli->close();
 ?>
 
@@ -159,42 +159,36 @@ $mysqli->close();
     </header>
 
     <main>
-    <section>
-    <div class="login-container">
-        <h2>Login</h2>
-        <?php if ($message): ?>
-            <p class="error"><?php echo htmlspecialchars($message); ?></p>
-        <?php endif; ?>
-        <form action="" method="POST">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <section>
+            <div class="login-container">
+            <h2>Login</h2>
+            <?php if($message) echo "<p class='error'>".htmlspecialchars($message)."</p>"; ?>
 
-            <label for="password">Password:</label>
-            <div style="display: flex; align-items: center;">
-                <input type="password" id="password" name="password" required>
-                <i class="fas fa-eye" id="togglePassword" onclick="togglePassword('password', this)" style="cursor: pointer; margin-left: 10px;"></i>
-            </div>
+            <form method="POST" action="">
+                <label>Email:</label>
+                <input type="email" name="email" required>
 
-            <!-- CSRF token -->
-            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                <label>Password:</label>
+                <div style="display:flex; align-items:center;">
+                    <input type="password" name="password" id="password" required>
+                    <i class="fas fa-eye" id="togglePassword" onclick="togglePassword('password', this)" style="cursor:pointer; margin-left:10px;"></i>
+                </div>
 
-            <p style="margin-left:25%;"> Not registered? <a href="registration.php" class="btn">Register</a></p>
-            <input type="submit" value="Login">
-        </form>
-    </div>
-    </section>
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-    <script>
-    function togglePassword(fieldId, icon) {
-        const passwordField = document.getElementById(fieldId);
-        const type = passwordField.type === "password" ? "text" : "password";
-        passwordField.type = type;
+                <p style="margin-left:25%;">Not registered? <a href="registration.php">Register</a></p>
+                <input type="submit" value="Login">
+            </form>
+        </div>
 
-        // Toggle icon style
-        icon.classList.toggle("fa-eye");
-        icon.classList.toggle("fa-eye-slash");
-    }
-    </script>
+        <script>
+        function togglePassword(fieldId, icon) {
+            const field = document.getElementById(fieldId);
+            field.type = (field.type === "password") ? "text" : "password";
+            icon.classList.toggle("fa-eye");
+            icon.classList.toggle("fa-eye-slash");
+        }
+        </script>
 
     <section id="about">
         <div class="container">

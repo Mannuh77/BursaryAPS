@@ -186,58 +186,70 @@ if (isset($_SESSION['message'])) {
     <section> <!-- Registration Form -->
     <div class="registration-container">
         <h2>Student Registration</h2>
-        <form id="registrationForm" action="register.php" method="post" autocomplete="on"> <!-- Enable autofill -->
-            <label for="first-name">First Name:</label>
-            <input type="text" id="first-name" name="first_name" required>
-            <span class="error" id="firstNameError"></span><br>
+<form id="registrationForm" action="register.php" method="post" autocomplete="on">
+    <label for="first-name">First Name:</label>
+    <input type="text" id="first-name" name="first_name" required>
+    <span class="error" id="firstNameError"></span><br>
 
-            <label for="last-name">Last Name:</label>
-            <input type="text" id="last-name" name="last_name" required>
-            <span class="error" id="lastNameError"></span><br>
+    <label for="middle-name">Middle Name:</label>
+    <input type="text" id="middle-name" name="middle_name">
+    <span class="error" id="middleNameError"></span><br>
 
-            <label for="id-number">ID Number:</label>
-            <input type="text" id="id-number" name="id_number" required>
-            <span class="error" id="idNumberError"></span><br>
+    <label for="last-name">Last Name:</label>
+    <input type="text" id="last-name" name="last_name" required>
+    <span class="error" id="lastNameError"></span><br>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required autocomplete="username"> <!-- Suggest username for autofill -->
-            <span class="error" id="emailError"></span><br>
+    <label for="id-number">ID Number/Birth Certificate Number:</label>
+    <input type="text" id="id-number" name="id_number" required>
+    <span class="error" id="idNumberError"></span><br>
 
-            <label for="phone">Phone Number:</label>
-            <input type="tel" id="phone" name="phone" required>
-            <span class="error" id="phoneError"></span><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required autocomplete="username">
+    <span class="error" id="emailError"></span><br>
 
-            <label for="ward">Ward:</label>
-            <select id="ward" name="ward" required>
-                <option value="">Select Ward</option>
-                <option value="Emali/Mulala">Emali/Mulala</option>
-                <option value="Makindu">Makindu</option>
-                <option value="Kikumbulyu North">Kikumbulyu North</option>
-                <option value="Kikumbulyu South">Kikumbulyu South</option>
-                <option value="Nguumo">Nguumo</option>
-                <option value="Nguu/Masumba">Nguu/Masumba</option>
-            </select>
-            <span class="error" id="wardError"></span><br>
+    <label for="phone">Phone Number:</label>
+    <input type="tel" id="phone" name="phone" required>
+    <span class="error" id="phoneError"></span><br>
 
-            <label for="password">Password:</label>
-            <div style="display: flex; align-items: center;">
-                <input type="password" id="password" name="password" required autocomplete="new-password"> <!-- Suggest new password -->
-                <i class="fas fa-eye" id="togglePassword" onclick="togglePassword('password', this)" style="cursor: pointer; margin-left: 10px;"></i>
-            </div>
-            <span class="error" id="passwordError"></span><br>
+    <label for="ward">Ward:</label>
+    <select id="ward" name="ward" required onchange="updatePollingStations()">
+        <option value="">-- Select Ward First --</option>
+        <option value="Makindu">Makindu</option>
+        <option value="Nguumo">Nguumo</option>
+        <option value="Kikumbulyu North">Kikumbulyu North</option>
+        <option value="Kikumbulyu South">Kikumbulyu South</option>
+        <option value="Nguu/Masumba">Nguu/Masumba</option>
+        <option value="Emali/Mulala">Emali/Mulala</option>
+    </select>
+    <span class="error" id="wardError"></span><br>
 
-            <label for="confirm-password">Confirm Password:</label>
-            <div style="display: flex; align-items: center;">
-                <input type="password" id="confirm-password" name="confirm_password" required autocomplete="new-password"> <!-- Suggest new password -->
-                <i class="fas fa-eye" id="toggleConfirmPassword" onclick="togglePassword('confirm-password', this)" style="cursor: pointer; margin-left: 10px;"></i>
-            </div>
-            <span class="error" id="confirmPasswordError"></span><br>
+   <label for="pollingstation">Polling Station:</label>
+    <select id="pollingstation" name="pollingstation" required disabled>
+        <option value="">-- Select Ward First --</option>
+    </select>
+    <span class="error" id="pollingstationError"></span><br>    
 
-            <input type="submit" value="Register">
-            <p style="margin-left:20%;">If registered. Click Login below</p>
-            <input type="button" value="Login" onclick="window.location.href='login.php'">
-        </form>
+    <label for="password">Password:</label>
+    <div style="display: flex; align-items: center;">
+        <input type="password" id="password" name="password" required autocomplete="new-password">
+        <i class="fas fa-eye" id="togglePassword" onclick="togglePasswordVisibility('password', this)" style="cursor: pointer; margin-left: 10px;"></i>
     </div>
+    <span class="error" id="passwordError"></span><br>
+
+    <label for="confirm-password">Confirm Password:</label>
+    <div style="display: flex; align-items: center;">
+        <input type="password" id="confirm-password" name="confirm_password" required autocomplete="new-password">
+        <i class="fas fa-eye" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirm-password', this)" style="cursor: pointer; margin-left: 10px;"></i>
+    </div>
+    <span class="error" id="confirmPasswordError"></span><br>
+
+    <input type="submit" value="Register">
+    <p style="margin-left:20%;">If registered. Click Login below</p>
+    <input type="button" value="Login" onclick="window.location.href='login.php'">
+</form>
+
+<!-- Include the wards.js script -->
+<script src="wards.js"></script>
 </section>
 
         <section id="about">

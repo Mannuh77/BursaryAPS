@@ -2,147 +2,161 @@
 session_start();
 
 // Ensure the user is logged in
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['email'])) {
     header("Location: login.php");
     exit();
 }
 
-// Dummy data for display (replace with actual database queries)
-$applicantDetails = "Name: John Doe<br>Email: john.doe@example.com<br>Status: Active";
-$institutionDetails = "Institution: Example University<br>Program: Computer Science";
-$attachments = "<ul><li>Document1.pdf</li><li>Document2.jpg</li></ul>";
-$applicationForm = "<form action='submit_application.php' method='POST'>
-                        <label for='bursaryAmount'>Requested Bursary Amount:</label>
-                        <input type='number' name='bursaryAmount' required>
-                        <br>
-                        <input type='submit' value='Submit Application'>
-                    </form>";
-$status = "Application Status: Pending";
+// Logged-in user email
+$user_email = $_SESSION['email'];
+
+// TEMP: replace with DB query later
+$applicationStatus = null; // null | draft | submitted | approved | rejected
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="dashboard.css">
-    <style>
-        /* Basic Styles */
-        .container { display: flex; flex-wrap: wrap; }
-        .sidebar { width: 20%; background-color: #333; color: #eaf0f1; padding: 20px; }
-        .content { width: 80%; padding: 20px; }
-        .menu-icon { display: none; font-size: 1.5rem; cursor: pointer; color: #333; }
-        
-        /* Footer Styles */
-        footer {
-            background-color: #333;
-            color: #eaf0f1;
-            text-align: center;
-            padding: 10px 0;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="dashboard.css">
+<style>
+    body { margin:0; font-family: Arial, sans-serif; }
 
-        /* Mobile Sidebar Styles */
-        @media (max-width: 768px) {
-            .container { flex-direction: column; }
-            .sidebar { width: 100%; } /* Set full width */
-            .menu-icon { display: block; padding: 10px; }
-            .sidebar.hidden { display: none; } /* Hide sidebar when not needed */
-            .content.hidden { display: none; } /* Hide content when not needed */
-        }
-    </style>
+    /* Header / Navbar */
+    header { 
+        background: linear-gradient(to right, #eaf0f1, #1e5735); 
+        color:#000; 
+        padding:15px; 
+        display:flex; 
+        align-items:center; 
+        justify-content:space-between; 
+        border-bottom: 2px solid #1e5735;
+    }
+    header h1 { font-size:20px; margin:0; color:#000; }
+    header nav ul { list-style:none; margin:0; padding:0; display:flex; align-items:center; }
+    header nav ul li { margin-left:15px; }
+    header nav ul li a { color:#eaf0f1; text-decoration:none; font-weight:bold; }
+    header .user-email { font-weight:bold; color:#eaf0f1; }
+
+    /* Container */
+    .container { display:flex; flex-wrap:wrap; min-height:80vh; }
+
+    /* Sidebar */
+    .sidebar { width:20%; background:#333; color:#eaf0f1; padding:20px; }
+    .sidebar h2, .sidebar h3 { color:#eaf0f1; }
+    .sidebar h3 a { color:#eaf0f1; text-decoration:none; }
+    .sidebar h3 a:hover { text-decoration:underline; }
+
+    /* Content */
+    .content { width:80%; padding:20px; }
+
+    /* Footer */
+    footer { background:purple; color:#fff; text-align:center; padding:10px 0; margin-top:10px; }
+
+    /* Responsive */
+    @media(max-width:768px) {
+        .container { flex-direction:column; }
+        .sidebar { width:100%; }
+        .sidebar.hidden { display:none; }
+    }
+</style>
 </head>
 <body>
+
 <header>
-    <img src="image/cdflogo.png" alt="CDF Logo" class="header-logo">
-    <h1 style="color: rgb(15, 15, 15); font-size: 20px;">Kibwezi West Constituency Bursary Application</h1>
-    <span class="menu-icon" onclick="toggleMenu()">
-        <i class="fas fa-bars"></i> <!-- Font Awesome icon for menu -->
-    </span>
+    <div>
+        <img src="image/cdflogo.png" alt="CDF Logo" style="height:40px; vertical-align:middle;">
+        <h1 style="display:inline-block; margin-left:10px;">Kibwezi West Bursary Application</h1>
+    </div>
     <nav>
         <ul>
-            <li><a href="home.php">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="logout.php">Log out</a></li>
+            <li class="user-email"><i class="fas fa-user-circle"></i> <?= htmlspecialchars($user_email) ?></li>
+            <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </nav>
 </header>
 
 <div class="container">
-    <!-- Sidebar Menu -->
+
+    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
-        <h2>Applicants Profile</h2>
-        <h2><a href="#" onclick="loadContent('applicantDetails.php')">Applicant Details</a></h2>
-       <!-- <h2><a href="#" onclick="loadContent('institutionDetails.php')">Institution Details</a>
-        <h2><a href="#" onclick="loadContent('attachments.php')">Attachments</a>
-        <h2><a href="#" onclick="loadContent('apply.php')">Apply for Bursary</a></h2>---->
-        <h2><a href="#" onclick="loadContent('status.php')">Application Status</a></h2>        
-        
+        <h2>Applicant Profile</h2>
+
+        <h3><a href="javascript:void(0)" onclick="loadContent('applicantDetails.php')">Applicant Profile</a></h3>
+
+        <?php if ($applicationStatus === null): ?>
+            <h3><a href="javascript:void(0)" onclick="loadContent('apply.php')">Apply for Bursary</a></h3>
+        <?php elseif ($applicationStatus === 'draft'): ?>
+            <h3><a href="javascript:void(0)" onclick="loadContent('apply.php')">Continue Application</a></h3>
+        <?php else: ?>
+            <h3><a href="javascript:void(0)" onclick="loadContent('status.php')">Application Status</a></h3>
+        <?php endif; ?>
     </div>
 
-    <!-- Main Content Area -->
+    <!-- MAIN CONTENT -->
     <div class="content" id="displayArea">
-        <h2>Welcome to Kibwezi West Bursary Application!</h2>
-        <h1 style="text-decoration:underline;">DISCLAIMER</h1>
-        <p>
-            <h2><b>Important Notice:</b></h2><br>
-            The information provided in this bursary application system is for the purpose of applying for financial assistance only and may change without notice.
-            <br><br><b>By submitting your application, you acknowledge that:</b><br>
-            <b>Eligibility:</b> Ensure you meet the eligibility criteria before applying.<br>
-            <b>Data Protection:</b> Your personal information will be processed in accordance with data protection laws and will only be used for application purposes.
-            <br><b>No Guarantees:</b> Submitting an application does not guarantee funding. All applications are subject to review and approval.
-            <br><b>Changes:</b> We may amend the terms of the bursary at any time.<br> Check the website regularly for updates.
-           <br><b>Limitation of Liability:</b> We are not liable for any damages arising from the use of this system.
-        </p>
+        <h2>Welcome to Kibwezi West Bursary Application</h2>
+
+        <?php if ($applicationStatus === null): ?>
+            <div style="background:#eef; padding:15px; border-left:5px solid #3f51b5;">
+                👉 Please complete your bursary application to proceed.
+            </div>
+        <?php elseif ($applicationStatus === 'submitted'): ?>
+            <div style="background:#fff3cd; padding:15px; border-left:5px solid #ff9800;">
+                ⏳ Your application has been submitted and is under review.
+            </div>
+        <?php elseif ($applicationStatus === 'approved'): ?>
+            <div style="background:#e8f5e9; padding:15px; border-left:5px solid #4caf50;">
+                ✅ Congratulations! Your bursary has been approved.
+            </div>
+        <?php elseif ($applicationStatus === 'rejected'): ?>
+            <div style="background:#ffebee; padding:15px; border-left:5px solid #f44336;">
+                ❌ Unfortunately, your application was rejected.
+            </div>
+        <?php endif; ?>
+
+        <hr>
+        <h2>Important Notice</h2>
+        <p>The information provided is for bursary application purposes and may change without notice.</p>
+        <ul>
+            <li><strong>Eligibility:</strong> Ensure you meet the criteria.</li>
+            <li><strong>Data Protection:</strong> Your data is processed according to the law.</li>
+            <li><strong>No Guarantee:</strong> Submission does not guarantee funding.</li>
+            <li><strong>Changes:</strong> Terms may change without notice.</li>
+            <li><strong>Liability:</strong> The constituency is not liable for system misuse.</li>
+        </ul>
     </div>
 </div>
 
-<footer style="background-color:purple;margin-top:10%;">
-    <p>&copy; 2024 Kibwezi West Constituency Bursary Application. All rights reserved.</p>
-    <p><a href="#terms" style="color: #eaf0f1;">Terms and Conditions</a> | <a href="#privacy" style="color: #eaf0f1;">Privacy Policy</a></p>
+<footer>
+    <p>&copy; 2024 Kibwezi West Constituency Bursary Application</p>
 </footer>
 
-
-
 <script>
-    // Toggle mobile sidebar visibility
-    function toggleMenu() {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('hidden');
+function toggleMenu() {
+    document.getElementById('sidebar').classList.toggle('hidden');
+}
+
+function loadContent(page) {
+    const allowedPages = ['applicantDetails.php','apply.php','status.php'];
+    if(!allowedPages.includes(page)){
+        document.getElementById('displayArea').innerHTML = "<p>Access denied.</p>";
+        return;
     }
 
-    // Load content dynamically and hide the sidebar
-    function loadContent(page) {
     const displayArea = document.getElementById('displayArea');
     const sidebar = document.getElementById('sidebar');
+    if(window.innerWidth <= 768) sidebar.classList.add('hidden');
 
-    sidebar.classList.add('hidden');
     displayArea.innerHTML = "<p>Loading...</p>";
-
     fetch(page)
-        .then(response => response.text())
-        .then(html => {
-            // Insert the HTML
-            displayArea.innerHTML = html;
-            
-            // Find and execute all scripts in the loaded content
-            const scripts = displayArea.querySelectorAll('script');
-            scripts.forEach(script => {
-                const newScript = document.createElement('script');
-                newScript.textContent = script.textContent;
-                document.body.appendChild(newScript);
-                document.body.removeChild(newScript);
-            });
-        })
-        .catch(error => {
-            displayArea.innerHTML = "<p>Error loading content. Please try again later.</p>";
-            console.error('Error:', error);
-        });
+        .then(res => res.text())
+        .then(html => displayArea.innerHTML = html)
+        .catch(() => displayArea.innerHTML = "<p>Error loading content.</p>");
 }
 </script>
+
 </body>
 </html>

@@ -21,13 +21,16 @@ $message = '';
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve and sanitize input data
-    $id_number = $mysqli->real_escape_string(trim($_POST['id_number']));
-    $first_name = $mysqli->real_escape_string(trim($_POST['first_name']));
-    $last_name = $mysqli->real_escape_string(trim($_POST['last_name']));
-    $ward = $mysqli->real_escape_string(trim($_POST['ward']));
-    $email = $mysqli->real_escape_string(trim($_POST['email']));
-    $phone = $mysqli->real_escape_string(trim($_POST['phone']));
-    $password = $mysqli->real_escape_string(trim($_POST['password']));
+   $first_name = trim($mysqli->real_escape_string($_POST['first_name']));
+    $middle_name = trim($mysqli->real_escape_string($_POST['middle_name']));
+    $last_name = trim($mysqli->real_escape_string($_POST['last_name']));
+    $id_number = trim($mysqli->real_escape_string($_POST['id_number']));
+    $email = trim($mysqli->real_escape_string($_POST['email']));
+    $phone = trim($mysqli->real_escape_string($_POST['phone']));
+    $ward = trim($mysqli->real_escape_string($_POST['ward']));
+    $pollingstation = trim($mysqli->real_escape_string($_POST['pollingstation']));
+    $password = trim($_POST['password']);
+    $confirm_password = trim($_POST['confirm_password']);
     
     // Optionally accept user_id if referral or linked user is supplied, else NULL
     // For example, if you have a hidden field or referral ID sent from a form
@@ -57,15 +60,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
             if ($user_id === NULL) {
-                // Insert with NULL user_id
-                $sql = "INSERT INTO applicants (id_number, first_name, last_name, ward, email, phone, password, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, NULL)";
+                $sql = "INSERT INTO applicants (id_number, first_name, middle_name, last_name, ward, pollingstation, email, phone, password, user_id, created_at) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NOW())";
                 $stmt = $mysqli->prepare($sql);
-                $stmt->bind_param("sssssss", $id_number, $first_name, $last_name, $ward, $email, $phone, $hashed_password);
+                $stmt->bind_param("sssssssss", $id_number, $first_name, $middle_name, $last_name, $ward, $pollingstation, $email, $phone, $hashed_password);
             } else {
-                // Insert with provided user_id (referral or parent)
-                $sql = "INSERT INTO applicants (id_number, first_name, last_name, ward, email, phone, password, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                $sql = "INSERT INTO applicants (id_number, first_name, middle_name, last_name, ward, pollingstation, email, phone, password, user_id, created_at) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                 $stmt = $mysqli->prepare($sql);
-                $stmt->bind_param("sssssssi", $id_number, $first_name, $last_name, $ward, $email, $phone, $hashed_password, $user_id);
+                $stmt->bind_param("sssssssssi", $id_number, $first_name, $middle_name, $last_name, $ward, $pollingstation, $email, $phone, $hashed_password, $user_id);
             }
 
             if ($stmt->execute()) {
