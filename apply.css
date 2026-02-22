@@ -1,0 +1,443 @@
+/* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header styling */
+            .header {
+            background: linear-gradient(to right, #eaf0f1, #1e5735); 
+            color:#000; 
+            padding:15px; 
+            display:flex; 
+            align-items:center; 
+            justify-content:space-between; 
+            border-bottom: 2px solid #1e5735;
+            }
+            header h1 { font-size:20px; margin:0; color:#000; }
+            header nav ul { list-style:none; margin:0; padding:0; display:flex; align-items:center; }
+            header nav ul li { margin-left:15px; }
+            header nav ul li a { color:#eaf0f1; text-decoration:none; font-weight:bold; }
+            header .user-email { font-weight:bold; color:#eaf0f1;              }
+            
+            /* Footer styling */
+        .footer {
+             background:purple; color:#fff; text-align:center; padding:10px 0; margin-top:10px; }
+
+        /* Main container */
+        .form-container {
+            width: 80%;            
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 35px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 51, 102, 0.15);
+            border: 1px solid rgba(0, 51, 102, 0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        input::placeholder,
+        select::placeholder {
+            font-weight: bold;
+            color: #666; /* optional: lighter color for placeholders */
+        }
+        /* Cross-browser support */
+        input::-webkit-input-placeholder,
+        select::-webkit-input-placeholder { font-weight: bold; }
+        input::-moz-placeholder,
+        select::-moz-placeholder { font-weight: bold; }
+        input:-ms-input-placeholder,
+        select:-ms-input-placeholder { font-weight: bold; }
+        input:-moz-placeholder,
+        select:-moz-placeholder { font-weight: bold; }
+        /* Form title */
+        .form-container h2 {
+            text-align: center;
+            color: #003366;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .form-container h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #003366, #ffd700);
+            border-radius: 2px;
+        }
+
+        /* Success message */
+        .success {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: #1b5e20;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 6px solid #2e7d32;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .success::before {
+            content: '✓';
+            background: #2e7d32;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sections */
+        .section {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .section:hover {
+            border-color: #003366;
+            box-shadow: 0 8px 25px rgba(0, 51, 102, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Section headers */
+        .section h4 {
+            color: #003366;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h4::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: #ffd700;
+            border-radius: 2px;
+        }
+
+        /* Form grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        /* Input fields styling */
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        input[type="text"]:hover,
+        input[type="number"]:hover,
+        select:hover {
+            border-color: #999;
+            background: #ffffff;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="file"]:focus,
+        select:focus {
+            border-color: #003366;
+            box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.1);
+            background: #ffffff;
+            outline: none;
+        }
+
+        /* Placeholder styling */
+        ::placeholder {
+            color: #999;
+            opacity: 0.7;
+        }
+
+        /* Select dropdown styling */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23003366' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            padding-right: 45px;
+            cursor: pointer;
+        }
+
+        /* File input styling */
+        input[type="file"] {
+            padding: 10px;
+            background: #fafafa;
+            border: 2px dashed #e0e0e0;
+            cursor: pointer;
+        }
+
+        input[type="file"]:hover {
+            border-color: #003366;
+            background: #f0f7ff;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background: #003366;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-right: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: #002244;
+            transform: translateY(-1px);
+        }
+
+        /* Labels for file inputs */
+        label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+
+        /* Error messages */
+        .error {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 6px;
+            display: block;
+            padding-left: 5px;
+            font-weight: 500;
+        }
+
+        /* Validation styles */
+        input.valid, select.valid {
+            border-color: #2e7d32;
+        }
+
+        input.invalid, select.invalid {
+            border-color: #d32f2f;
+        }
+
+        /* Submit button */
+        .submit-btn {
+            display: block;
+            width: 280px;
+            margin: 40px auto 10px auto;
+            background: linear-gradient(135deg, #003366 0%, #002244 100%);
+            color: white;
+            padding: 16px 30px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 51, 102, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 51, 102, 0.4);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Loading state for submit button */
+        .submit-btn.loading {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0a1a2f 100%);
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid transparent;
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Required field indicator */
+        .required-indicator {
+            color: #d32f2f;
+            margin-left: 3px;
+        }
+
+        /* Help text for multiple files */
+        .help-text {
+            display: block;
+            color: #666;
+            font-size: 11px;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .form-container {
+                margin: 20px;
+                padding: 25px;
+            }
+            
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                font-size: 20px;
+                padding: 15px;
+            }
+            
+            .form-container h2 {
+                font-size: 26px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .submit-btn {
+                width: 100%;
+                padding: 14px;
+                font-size: 16px;
+            }
+        }
+
+        /* Animation delays for sections */
+        .section:nth-child(1) { animation: fadeInUp 0.5s ease-out 0.1s both; }
+        .section:nth-child(2) { animation: fadeInUp 0.5s ease-out 0.2s both; }
+        .section:nth-child(3) { animation: fadeInUp 0.5s ease-out 0.3s both; }
+        .section:nth-child(4) { animation: fadeInUp 0.5s ease-out 0.4s both; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Remove number input spinners */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Additional styling for form groups */
+        .form-grid > div {
+            position: relative;
+        }
+
+        /* Optional fields styling */
+        input:optional {
+            border-left: 4px solid transparent;
+        }
+
+        input:required {
+            border-left: 4px solid #ffd700;
+        }
+   

@@ -1,0 +1,237 @@
+/* Resetting some basic elements */
+body, h1, h2, p, ul {
+    margin: 0;
+    padding: 0;
+}
+
+/* Styling the body and container */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background: linear-gradient(to right, #eaf0f1, #d4efdf); /* Gradient background for the body */
+    color: #333;
+}
+
+.container {
+    width: 100%;
+    margin: auto;
+    overflow: hidden;
+}
+
+/* Header and navigation styles */
+header {
+    background: linear-gradient(to right, #eaf0f1, #1e5735); /* Gradient from white to dark green */
+    color: #fff;
+    padding: 10px 0;
+    min-height: 50px;
+    border-bottom: #77ab59 3px solid;
+}
+
+header a {
+    color: #fff; /* White text color for links */
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 1%;
+    font-size: 16px;
+}
+
+header ul {
+    padding: 0;
+    list-style: none;
+    margin-left: 60%;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+}
+
+header li {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #023519;
+    padding: 0px 10px;
+    margin-left: 60%;
+    border-radius: 10px;
+    display: inline-block;
+    margin: 20px 10px;
+    transition: background-color 0.3s ease;
+}
+
+header h1 {
+    float: left;
+    margin-top: 10px;
+}
+
+/* Section styles */
+section {
+    padding: 20px 0;
+}
+
+.home-content {
+    text-align: center;
+    background: #5b0f5e; /* Green background for the home section */
+    color: #fff;
+    padding: 60px 20px;
+}
+
+.home-content h2 {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.home-content p {
+    font-size: 18px;
+}
+.list{
+    text-decoration: none;
+    color: #fff;
+    font-size: 12px;
+    background-color: #064670;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 10px 0;
+    transition: background-color 0.3s ease;
+}
+.home-content .btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #333; /* Dark background for buttons */
+    color: #fff;
+    text-transform: uppercase;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.home-content .btn:hover {
+    background: #555; /* Slightly lighter background on hover */
+}
+
+section#about {
+    background: #f9f9f9;
+    padding: 40px 20px;
+}
+
+section#apply .btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #77ab59; /* Green background for buttons */
+    color: #fff;
+    text-transform: uppercase;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+section#apply .btn:hover {
+    background: #65a040; /* Slightly darker green on hover */
+}
+
+/* Footer styles */
+footer {
+    background: linear-gradient(to right, #2c3e50, #34495e); /* Dark gradient for footer */
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+
+footer a {
+    color: #77ab59;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline; /* Underline on hover for footer links */
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    header h1, header ul {
+        text-align: center;
+        float: none;
+    }
+
+    header ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    header li {
+        margin: 5px 0;
+    }
+
+    .container {
+        width: 100%;
+        padding: 20px;
+        margin-left: -4%;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-content h2 {
+        font-size: 24px;
+    }
+
+    .home-content p {
+        font-size: 16px;
+    }
+
+    .home-content .btn {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+}
+.center-text {
+    text-align: center;
+    font-weight: bolder;
+}
+
+/* Header image styling */
+header .container img {
+    max-width: 10%; /* Ensures the image is responsive */
+    margin-left: 0%;
+    margin-top: 1%;
+    height: auto; /* Maintains aspect ratio */
+    display: block; /* Removes any default inline spacing */
+    margin-right: 5px; /* Adds space to the right of the image */
+    border-radius: 8px; /* Optional: rounded corners for the image */
+}
+/* Container that holds the scrolling images */
+.scrolling-section {
+    width: 100%;
+    overflow: hidden; /* Hides anything outside the container */
+    position: relative;
+    background: #f4f4f4; /* Optional: background color for better visibility */
+}
+
+/* Scrolling container */
+.scrolling-container {
+    display: flex; /* Align images horizontally */
+    width: 100%;
+    animation: scroll 10s linear infinite; /* Adjust timing for scrolling speed */
+}
+
+/* Style for each image */
+.section-img {
+    width: 100%; /* Adjust based on desired image size */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 10px; /* Space between images */
+    border-radius: 8px; /* Optional: rounded corners */
+}
+
+/* Animation to scroll images horizontally */
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+.logo-container{
+    display:flex;
+    align-items:center;
+    margin-bottom:-6%;
+}
